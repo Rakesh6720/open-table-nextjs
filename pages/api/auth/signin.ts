@@ -1,5 +1,10 @@
+import { PrismaClient, User } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 import validator from "validator";
+import bcrypt from "bcrypt";
+import * as jose from "jose";
+
+const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
@@ -26,6 +31,37 @@ export default async function handler(
     if (errors.length) {
       return res.status(400).json({ ErrorMessage: errors[0] });
     }
+
+    const userWithEmail = prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!userWithEmail) {
+      return res
+        .status(401)
+        .json({ errorMessage: "Email or password is invalid" });
+    }
+
+    const isMatch = await bcrypt.compare(password, userWithEmail.password);
+
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ errorMessage: "Email or password is invalid" });
+    }
+
+    const alg = "HS256";
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const token = await new jose.SignJWT({
+      email: userWithEmail.email,
+    })
+      .setProtectedHeader({ alg })
+      .setExpirationTime("24h")
+      .sign(secret);
+
+    return res.status(200).json({ token });
   }
 
   return res.status(404).json("Unknown endpoint");
