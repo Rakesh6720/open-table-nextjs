@@ -1,4 +1,5 @@
 import { PrismaClient, Review } from "@prisma/client";
+import { notFound } from "next/navigation";
 import Description from "./components/Description";
 import Images from "./components/Images";
 import Ratings from "./components/Ratings";
@@ -34,7 +35,7 @@ const fetchRestaurantBySlug = async (slug: string): Promise<Restaurant> => {
   });
 
   if (!restaurant) {
-    throw new Error("Cannot find restaurant");
+    notFound();
   }
 
   return restaurant;
