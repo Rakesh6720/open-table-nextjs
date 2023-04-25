@@ -24,6 +24,22 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const [inputs, setInputs] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    city: "",
+    password: "",
+  });
+
+  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs({
+      ...inputs,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   const renderContent = (signInContent: string, signUpContent: string) => {
     return isSignIn ? signInContent : signUpContent;
   };
@@ -58,7 +74,11 @@ export default function AuthModal({ isSignIn }: { isSignIn: boolean }) {
                   "Create Your Open Table Account"
                 )}
               </h2>
-              <AuthModalnputs />
+              <AuthModalnputs
+                inputs={inputs}
+                handleChangeInput={handleChangeInput}
+                isSignIn={isSignIn}
+              />
               <button className="uppercase bg-red-600 w-full text-white p-3 rounded text-sm mb-5 diasbled:bg-gray-400">
                 {renderContent("Sign In", "Create Account")}
               </button>
