@@ -20,7 +20,7 @@ interface Restaurant {
 }
 
 const fetchRestaurantBySlug = async (slug: string): Promise<Restaurant> => {
-  const restaurant = await prisma.restaurant.findUnique({
+  const restaurant = await prisma.restaurant.findFirst({
     where: {
       slug,
     },
