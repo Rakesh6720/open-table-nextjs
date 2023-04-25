@@ -1,6 +1,7 @@
 import { Cuisine, PRICE, Location } from "@prisma/client";
 import Link from "next/link";
 import Price from "../../components/Price";
+
 interface Restaurant {
   id: number;
   name: string;
