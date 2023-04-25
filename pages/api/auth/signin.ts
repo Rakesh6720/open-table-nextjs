@@ -32,7 +32,7 @@ export default async function handler(
       return res.status(400).json({ ErrorMessage: errors[0] });
     }
 
-    const userWithEmail = prisma.user.findFirst({
+    const userWithEmail = await prisma.user.findUnique({
       where: {
         email,
       },
